@@ -1,4 +1,6 @@
-<?php namespace ComBank\Bank;
+<?php
+
+namespace ComBank\Bank;
 
 /**
  * Created by VS Code.
@@ -18,6 +20,39 @@ use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 
-class BankAccount
-{
+class BankAccount implements BackAccountInterface {
+    private $balance;
+    private $status;
+    private $overdraft;
+
+    public function transaction(BankTransactionInterface $a): void{
+
+
+
     }
+    public function openAccount(): bool{
+
+        return false;
+    }
+    public function reopenAccount(): void{
+        $this->status = $GLOBALS['STATUS_OPEN'];
+    }
+    public function closeAccount(): void{
+        $this->status = $GLOBALS['STATUS_CLOSED'];
+    }
+    public function getBalance(): float{
+
+        return $this->balance;
+    }
+    public function getOverdraft(): OverdraftInterface{
+
+        return new OverdraftInterface;
+    }
+    public function applyOverdraft(OverdraftInterface $a): void{
+        $this->overdraft = $a;
+    }
+    public function setBalance(float $a): void{
+        $this->balance = $a;
+    }
+
+}

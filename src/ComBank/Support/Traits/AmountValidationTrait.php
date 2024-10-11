@@ -19,6 +19,6 @@ trait AmountValidationTrait
      */
     public function validateAmount(float $amount):void
     {
-        
+
     }
 }

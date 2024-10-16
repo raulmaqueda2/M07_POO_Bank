@@ -19,40 +19,63 @@ use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use PhpParser\Node\Stmt\If_;
 
-class BankAccount implements BackAccountInterface {
+class BankAccount implements BackAccountInterface
+{
     private $balance;
     private $status;
     private $overdraft;
 
-    public function transaction(BankTransactionInterface $a): void{
-
-
+    public function __construct(float $a)
+    {
+        $this->balance = $a;
+        $this->status = BankAccount::STATUS_OPEN;
+        $this->overdraft = new NoOverdraft();
 
     }
-    public function openAccount(): bool{
 
-        return false;
+    public function transaction(BankTransactionInterface $a): void
+    {               
+        if (!($this->status == BankAccount::STATUS_OPEN)) {
+             throw new BankAccountException("exception because the account is closed");
+        }
+        $this->balance = ($a->applyTransaction($this));
     }
-    public function reopenAccount(): void{
-        $this->status = $GLOBALS['STATUS_OPEN'];
+    public function openAccount(): bool
+    {
+        return  $this->status!=BankAccount::STATUS_CLOSED;
     }
-    public function closeAccount(): void{
-        $this->status = $GLOBALS['STATUS_CLOSED'];
+    public function reopenAccount(): void
+    {
+        if (($this->status == BankAccount::STATUS_OPEN)) {
+            throw (new BankAccountException("exception because the account is already open"));
+        }
+        $this->status = BankAccount::STATUS_OPEN;
     }
-    public function getBalance(): float{
+    public function closeAccount(): void
+    {
+        if (($this->status == BankAccount::STATUS_CLOSED)) {
+            throw (new BankAccountException("exception because the account is already closed"));
+        }
+        $this->status = BankAccount::STATUS_CLOSED;
+    }
+    public function getBalance(): float
+    {
 
         return $this->balance;
     }
-    public function getOverdraft(): OverdraftInterface{
+    public function getOverdraft(): OverdraftInterface
+    {
 
-        return new OverdraftInterface;
+        return $this->overdraft;
     }
-    public function applyOverdraft(OverdraftInterface $a): void{
+    public function applyOverdraft(OverdraftInterface $a): void
+    {
         $this->overdraft = $a;
     }
-    public function setBalance(float $a): void{
+    public function setBalance(float $a): void
+    {
         $this->balance = $a;
     }
-
 }

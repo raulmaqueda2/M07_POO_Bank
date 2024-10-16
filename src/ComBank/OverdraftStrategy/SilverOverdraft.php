@@ -17,7 +17,7 @@ class SilverOverdraft implements OverdraftInterface
         return true;
     }
     public function getOverdraftFundsAmount():float{
-        return 0.0;
+        return 100.0;
     }
     
 }

@@ -20,6 +20,7 @@ require_once 'bootstrap.php';
 
 //---[Bank account 1]---/
 // create a new account1 with balance 400
+$bankAccount1 = new BankAccount(400);
 pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
     // show balance account
@@ -31,16 +32,18 @@ try {
 
     // deposit +150 
     pl('Doing transaction deposit (+150) with current balance ' . $bankAccount1->getBalance());
-
+    $bankAccount1->transaction(new DepositTransaction(150.0));
     pl('My new balance after deposit (+150) : ' . $bankAccount1->getBalance());
 
     // withdrawal -25
     pl('Doing transaction withdrawal (-25) with current balance ' . $bankAccount1->getBalance());
+    $bankAccount1->transaction(new WithdrawTransaction(25.0));
 
     pl('My new balance after withdrawal (-25) : ' . $bankAccount1->getBalance());
 
     // withdrawal -600
     pl('Doing transaction withdrawal (-600) with current balance ' . $bankAccount1->getBalance());
+    $bankAccount1->transaction(new WithdrawTransaction(600.0));
 
 } catch (ZeroAmountException $e) {
     pl($e->getMessage());

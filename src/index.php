@@ -60,42 +60,56 @@ pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
 //---[Bank account 2]---/
 pl('--------- [Start testing bank account #2, Silver overdraft (100.0 funds)] --------');
 try {
-    
+    $bankAccount2 = new BankAccount(200);
+    $bankAccount2->applyOverdraft(new SilverOverdraft());
+
     // show balance account
    
     // deposit +100
     pl('Doing transaction deposit (+100) with current balance ' . $bankAccount2->getBalance());
-    
+    $bankAccount2->transaction(new DepositTransaction(100.0));
+
     pl('My new balance after deposit (+100) : ' . $bankAccount2->getBalance());
 
     // withdrawal -300
     pl('Doing transaction deposit (-300) with current balance ' . $bankAccount2->getBalance());
-   
+    $bankAccount2->transaction(new WithdrawTransaction(300.0));
+
     pl('My new balance after withdrawal (-300) : ' . $bankAccount2->getBalance());
 
     // withdrawal -50
     pl('Doing transaction deposit (-50) with current balance ' . $bankAccount2->getBalance());
-    
+    $bankAccount2->transaction(new WithdrawTransaction(50.0));
+
     pl('My new balance after withdrawal (-50) with funds : ' . $bankAccount2->getBalance());
 
     // withdrawal -120
     pl('Doing transaction withdrawal (-120) with current balance ' . $bankAccount2->getBalance());
-    
+    $bankAccount2->transaction(new WithdrawTransaction(120.0));
+
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
 }
 pl('My balance after failed last transaction : ' . $bankAccount2->getBalance());
 
 try {
+    $bankAccount2->transaction(new WithdrawTransaction(20.0));
     pl('Doing transaction withdrawal (-20) with current balance : ' . $bankAccount2->getBalance());
-    
+
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
 }
 pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
 
+pl('Closse account ');
+$bankAccount2->closeAccount();
+
+
 try {
-   
+    pl('re Closse account' .$bankAccount2->closeAccount());
+
+    ;
+
 } catch (BankAccountException $e) {
     pl($e->getMessage());
 }

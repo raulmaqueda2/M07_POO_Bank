@@ -12,6 +12,9 @@ use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 class NoOverdraft implements OverdraftInterface 
 {
     public function isGrantOverdraftFunds(float $a):bool{
+        if ($a<0) {
+            return false;
+        }
         return true;
     }
     public function getOverdraftFundsAmount():float{

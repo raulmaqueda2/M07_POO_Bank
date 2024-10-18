@@ -14,6 +14,9 @@ use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 class SilverOverdraft implements OverdraftInterface
 {
     public function isGrantOverdraftFunds(float $a):bool{
+        if ($a<-100) {
+            return false;
+        }
         return true;
     }
     public function getOverdraftFundsAmount():float{

@@ -38,9 +38,13 @@ class BankAccount implements BackAccountInterface
     public function transaction(BankTransactionInterface $a): void
     {               
         if (!($this->status == BankAccount::STATUS_OPEN)) {
-             throw new BankAccountException("exception because the account is closed");
+            throw new BankAccountException("exception because the account is closed");
         }
-        $this->balance = ($a->applyTransaction($this));
+        try {
+            $this->balance = ($a->applyTransaction($this));
+        } catch (\Throwable $th) {
+            throw new FailedTransactionException("failed transaction due to overdraft");
+        }
     }
     public function openAccount(): bool
     {

@@ -18,6 +18,7 @@ class DepositTransaction extends BaseTransaction implements BankTransactionInter
 {
     public function __construct(float $amount)
     {
+        $this->date = date("l jS \of F Y h:i:s A",time());
         if ($amount > 0.00) {
             $this->amount = $amount;
         } else {

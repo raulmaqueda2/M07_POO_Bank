@@ -108,8 +108,9 @@ $bankAccount2->closeAccount();
 try {
     pl('re Closse account' .$bankAccount2->closeAccount());
 
-    ;
 
 } catch (BankAccountException $e) {
     pl($e->getMessage());
 }
+$bankAccount2->getHistorial();
+

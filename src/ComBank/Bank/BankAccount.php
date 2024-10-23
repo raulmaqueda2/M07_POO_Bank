@@ -26,29 +26,30 @@ class BankAccount implements BackAccountInterface
     private $balance;
     private $status;
     private $overdraft;
-
+    var $historial = [];
     public function __construct(float $a)
     {
         $this->balance = $a;
         $this->status = BankAccount::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
-
     }
 
     public function transaction(BankTransactionInterface $a): void
-    {               
+    {
+
         if (!($this->status == BankAccount::STATUS_OPEN)) {
             throw new BankAccountException("exception because the account is closed");
         }
         try {
             $this->balance = ($a->applyTransaction($this));
+            array_push($this->historial, $a);
         } catch (\Throwable $th) {
             throw new FailedTransactionException("failed transaction due to overdraft");
         }
     }
     public function openAccount(): bool
     {
-        return  $this->status!=BankAccount::STATUS_CLOSED;
+        return  $this->status != BankAccount::STATUS_CLOSED;
     }
     public function reopenAccount(): void
     {
@@ -81,5 +82,8 @@ class BankAccount implements BackAccountInterface
     public function setBalance(float $a): void
     {
         $this->balance = $a;
+    }
+    public function getHistorial(): void {
+        print_r($this->historial);
     }
 }

@@ -27,4 +27,5 @@ interface BackAccountInterface
     public function getOverdraft(): OverdraftInterface;
     public function applyOverdraft(OverdraftInterface $a): void;
     public function setBalance(float $a): void;
+    public function getHistorial():void;
 }

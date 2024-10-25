@@ -24,6 +24,7 @@ use PhpParser\Node\Stmt\If_;
 
 class BankAccount implements BackAccountInterface
 {
+    private $initialBalance;
     private $balance;
     private $status;
     private $overdraft;
@@ -33,6 +34,7 @@ class BankAccount implements BackAccountInterface
         $this->balance = $a;
         $this->status = BankAccount::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
+        $this->initialBalance = $a;
     }
 
     public function transaction(BankTransactionInterface $a): void
@@ -68,13 +70,20 @@ class BankAccount implements BackAccountInterface
     }
     public function getBalance(): float
     {
+        $balance = $this->initialBalance;
         $historialTotal = ($this->getHistorial());
-        foreach( $historialTotal as $historial){
-            if($historial->getTransactionInfo()==){
-
+        foreach ($historialTotal as $historial) {
+            switch ($historial->getTransactionInfo()) {
+                case "DEPOSIT_TRANSACTION":
+                    $balance += $historial->getAmount();
+                    break;
+                default:
+                    $balance -= $historial->getAmount();
+                    break;
             }
         }
-        return $this->balance;
+
+        return $balance;
     }
     public function getOverdraft(): OverdraftInterface
     {
@@ -89,7 +98,8 @@ class BankAccount implements BackAccountInterface
     {
         $this->balance = $a;
     }
-    public function getHistorial(): array {
+    public function getHistorial(): array
+    {
         return ($this->historial);
     }
 }

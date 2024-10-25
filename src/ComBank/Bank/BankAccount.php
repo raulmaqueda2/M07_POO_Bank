@@ -18,6 +18,7 @@ use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
+use ComBank\Transactions\BaseTransaction;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 use PhpParser\Node\Stmt\If_;
 
@@ -41,7 +42,7 @@ class BankAccount implements BackAccountInterface
             throw new BankAccountException("exception because the account is closed");
         }
         try {
-            $this->balance = ($a->applyTransaction($this));
+            $this->balance = (($a->applyTransaction($this)));
             array_push($this->historial, $a);
         } catch (\Throwable $th) {
             throw new FailedTransactionException("failed transaction due to overdraft");
@@ -67,7 +68,12 @@ class BankAccount implements BackAccountInterface
     }
     public function getBalance(): float
     {
+        $historialTotal = ($this->getHistorial());
+        foreach( $historialTotal as $historial){
+            if($historial->getTransactionInfo()==){
 
+            }
+        }
         return $this->balance;
     }
     public function getOverdraft(): OverdraftInterface
@@ -83,7 +89,7 @@ class BankAccount implements BackAccountInterface
     {
         $this->balance = $a;
     }
-    public function getHistorial(): void {
-        print_r($this->historial);
+    public function getHistorial(): array {
+        return ($this->historial);
     }
 }

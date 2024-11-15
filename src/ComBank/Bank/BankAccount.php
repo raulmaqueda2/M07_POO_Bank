@@ -10,6 +10,9 @@ namespace ComBank\Bank;
  */
 use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\BankNacionalToInternacionalException;
+use ComBank\Exceptions\FailedCreateAccountException;
+use ComBank\Exceptions\DetectFraudeException;
+
 use ComBank\Exceptions\InvalidArgsException;
 use ComBank\Exceptions\ZeroAmountException;
 use ComBank\OverdraftStrategy\NoOverdraft;
@@ -34,22 +37,38 @@ class BankAccount implements BackAccountInterface, Serializable
     private $overdraft;
     private $international = false;
 
-    public function __construct(float $balance, bool $international = false)
+    private $email;
+
+    public function __construct(float $balance, bool $international = false, string $email = null)
     {
         $this->balance = $balance;
         $this->status = BankAccount::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
         $this->international = $international;
-
+        if ($email != null) {
+            if ((new api())->validEmail($email) === true) {
+                $this->email = $email;
+            } else {
+                throw new FailedCreateAccountException("email invalid");
+            }
+        }
     }
 
-    public function transaction(BankTransactionInterface $a): void
+    public function transaction(BankTransactionInterface $a, bool $CheckFraude = false): void
     {
         if (!($this->status == BankAccount::STATUS_OPEN)) {
             throw new BankAccountException("exception because the account is closed");
         }
         try {
-            $this->balance = ($a->applyTransaction($this));
+            if ($CheckFraude) {
+                if ((new api())->checkFraudeTransaction($a)) {
+                    $this->balance = ($a->applyTransaction($this));
+                } else {
+                    throw new DetectFraudeException("fraude");
+                }
+            } else {
+                $this->balance = ($a->applyTransaction($this));
+            }
         } catch (\Throwable $th) {
             throw new FailedTransactionException("failed transaction due to overdraft");
         }
@@ -99,6 +118,15 @@ class BankAccount implements BackAccountInterface, Serializable
     public function setBalance(float $a): void
     {
         $this->balance = $a;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+    public function getEmail()
+    {
+        return $this->email;
     }
     public function serialize()
     {

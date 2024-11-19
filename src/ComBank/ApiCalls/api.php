@@ -41,7 +41,7 @@ class api
         return $isValid;
     }
 
-    function ultimaTransacion()
+    function ultimaTransacion(): mixed
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, "https://getpantry.cloud/apiv1/pantry/9699a76f-d96e-485c-ba83-4e153bb85420");

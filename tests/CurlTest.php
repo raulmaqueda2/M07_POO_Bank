@@ -2,6 +2,7 @@
 use PHPUnit\Framework\TestCase;
 use ComBank\Bank\BankAccount;
 use ComBank\Transactions\DepositTransaction;
+use ComBank\ApiCalls\api;
 
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\OverdraftStrategy\SilverOverdraft;
@@ -71,25 +72,26 @@ class curlTest extends TestCase
 
     //Test email
 
-    public function testEmailValid()
-    {
-        //$bankAccount = new BankAccount(150.0, false, "raulmaqueda2004@gmail.com");
-        //  $this->assertEquals("raulmaqueda2004@gmail.com", $bankAccount->getEmail());
-    }
+    /* public function testEmailValid()
+     {
+         //$bankAccount = new BankAccount(150.0, false, "raulmaqueda2004@gmail.com");
+         //  $this->assertEquals("raulmaqueda2004@gmail.com", $bankAccount->getEmail());
+     }
 
-    public function testEmailInvalid()
-    {
-        // $this->expectException(FailedCreateAccountException::class);
-        //   $bankAccount = new BankAccount(150.0, false, "email@gmail.com");
+     public function testEmailInvalid()
+     {
+         // $this->expectException(FailedCreateAccountException::class);
+         //   $bankAccount = new BankAccount(150.0, false, "email@gmail.com");
 
-    }
+     }*/
     //Test email
 
     //Test Deposit fraude
-    public function TestDepositFraudFuncuonalityAllow()
+    public function TestDepositFraudFuncuonalityAllow(): void
     {
         $bankAccount = new BankAccount(150.0);
         $bankAccount->transaction(new DepositTransaction(30));
+        $this->assertEquals($bankAccount->getBalance(), 180);
     }
     public function TestDepositFraudFuncuonalityDeny()
     {
@@ -103,6 +105,8 @@ class curlTest extends TestCase
     {
         $bankAccount = new BankAccount(150.0);
         $bankAccount->transaction(new WithdrawTransaction(30));
+        $this->assertEquals($bankAccount->getBalance(), 120);
+
     }
     public function TestWithdrawFraudFuncuonalityDeny()
     {
@@ -111,5 +115,13 @@ class curlTest extends TestCase
         $bankAccount->transaction(new WithdrawTransaction(200));
     }
     //Test Withdraw fraude
+
+    //Test Historial
+    public function TestHistoryTransaction()
+    {
+        $bankAccount = new BankAccount(250.0);
+        $bankAccount->transaction(new WithdrawTransaction(200));
+        $this->assertEquals((new api())->ultimaTransacion()->cantidad, 200);
+    }
 
 }

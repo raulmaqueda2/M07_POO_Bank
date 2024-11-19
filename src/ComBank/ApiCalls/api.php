@@ -41,4 +41,31 @@ class api
         return $isValid;
     }
 
+    function ultimaTransacion()
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, "https://getpantry.cloud/apiv1/pantry/9699a76f-d96e-485c-ba83-4e153bb85420");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = json_decode(curl_exec($curl));
+        return $response->baskets;
+    }
+
+    function postTransaction(BankTransactionInterface $transacion): void
+    {
+        $Tipotransacion = $transacion->getTransactionInfo() == "DEPOSIT_TRANSACTION" ? "extraer" : "depositar";
+        $post = json_encode(array(
+            'tipo' => "$Tipotransacion",
+            'cantidad' => $transacion->getAmount(),
+        ));
+        $curl = curl_init("https://getpantry.cloud/apiv1/pantry/9699a76f-d96e-485c-ba83-4e153bb85420/basket/transacion");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($post)
+        ));
+        $response = curl_exec($curl);
+    }
+
 }

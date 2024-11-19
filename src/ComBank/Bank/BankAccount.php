@@ -62,12 +62,14 @@ class BankAccount implements BackAccountInterface, Serializable
         try {
             if ($CheckFraude) {
                 if ((new api())->checkFraudeTransaction($a)) {
-                    $this->balance = ($a->applyTransaction($this));
+                    $this->balance = ($a->applyTransaction(b: $this));
+                    (new api())->postTransaction($a);
                 } else {
                     throw new DetectFraudeException("fraude");
                 }
             } else {
                 $this->balance = ($a->applyTransaction($this));
+                (new api())->postTransaction($a);
             }
         } catch (\Throwable $th) {
             throw new FailedTransactionException("failed transaction due to overdraft");

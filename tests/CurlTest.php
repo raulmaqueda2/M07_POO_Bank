@@ -72,18 +72,18 @@ class curlTest extends TestCase
 
     //Test email
 
-    /* public function testEmailValid()
-     {
-         //$bankAccount = new BankAccount(150.0, false, "raulmaqueda2004@gmail.com");
-         //  $this->assertEquals("raulmaqueda2004@gmail.com", $bankAccount->getEmail());
-     }
+    public function testEmailValid()
+    {
+        $bankAccount = new BankAccount(150.0, false, "raulmaqueda2004@gmail.com");
+        $this->assertEquals("raulmaqueda2004@gmail.com", $bankAccount->getEmail());
+    }
 
-     public function testEmailInvalid()
-     {
-         // $this->expectException(FailedCreateAccountException::class);
-         //   $bankAccount = new BankAccount(150.0, false, "email@gmail.com");
+    public function testEmailInvalid()
+    {
+        $this->expectException(FailedCreateAccountException::class);
+        $bankAccount = new BankAccount(150.0, false, "email@gmail.com");
 
-     }*/
+    }
     //Test email
 
     //Test Deposit fraude

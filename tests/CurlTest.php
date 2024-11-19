@@ -76,13 +76,13 @@ class curlTest extends TestCase
     {
         $bankAccount = new BankAccount(150.0, false, "raulmaqueda2004@gmail.com");
         $this->assertEquals("raulmaqueda2004@gmail.com", $bankAccount->getEmail());
-        delay(2000);
+        sleep(2);
 
     }
 
     public function testEmailInvalid()
     {
-        delay(2000);
+        sleep(2);
         $this->expectException(FailedCreateAccountException::class);
         $bankAccount = new BankAccount(150.0, false, "email@gmail.com");
 
